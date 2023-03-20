@@ -28,4 +28,11 @@ public class Login {
     private void clickResetBtn() {
         driver.findElement(btnReset).click();
     }
+
+    public String getAlertText() {
+        var alert = driver.switchTo().alert();
+        var alertTxt = alert.getText();
+        alert.accept();
+        return alertTxt;
+    }
 }

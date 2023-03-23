@@ -3,7 +3,7 @@ package tests;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -26,20 +26,31 @@ public class LoginTest {
     }
 
     @ParameterizedTest
-    @CsvFileSource(files = {"src/test/resources/params/user-data.csv"}, numLinesToSkip = 1)
-    public void verifyLogin(String username, String password) {
-        login.submit(username, password);
+    @MethodSource("userData")
+    public void mngrIdShown(String username, String password) {
+        login.enterCredentials(username, password);
+        var mngrHome = login.clickLoginBtn();
         try {
-            var alertText = login.getAlertText();
-            assertEquals("User or Password is not valid", alertText);
-            assertTrue(driver.getTitle().contains("Home Page"));
+            var alert = login.getAlert();
+            assertEquals("User or Password is not valid", alert.getText());
+            alert.accept();
         } catch (NoAlertPresentException e) {
-            assertTrue(driver.getTitle().contains("Manager HomePage"));
+            assertTrue(mngrHome.getWelcomeText().contains(username));
         }
     }
 
     @AfterAll
     public static void tearDown() {
         driver.quit();
+    }
+
+    // Data Provider
+    private static Object[][] userData() {
+        return new Object[][]{
+                {"invalid", "invalid"},
+                {"invalid", "ebanuze"},
+                {"mngr486178", "invalid"},
+                {"mngr486178", "ebanuze"}
+        };
     }
 }

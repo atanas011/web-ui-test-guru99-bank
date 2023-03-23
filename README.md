@@ -21,4 +21,4 @@ User story:
 4. Verify alert text
 5. Enter valid UserId and valid Password
 6. Click Login
-7. Verify successful login
+7. Verify ManagerID shown in Welcome message on result page

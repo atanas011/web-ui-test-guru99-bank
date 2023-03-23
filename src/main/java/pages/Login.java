@@ -1,6 +1,8 @@
 package pages;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 
 public class Login {
@@ -9,30 +11,27 @@ public class Login {
     private final By userId = By.name("uid");
     private final By password = By.name("password");
     private final By btnLogin = By.name("btnLogin");
-    private final By btnReset = By.name("btnReset");
 
     public Login(WebDriver driver) {
         this.driver = driver;
     }
 
-    public void submit(String user, String pass) {
+    public void enterCredentials(String user, String pass) {
         driver.findElement(userId).sendKeys(user);
         driver.findElement(password).sendKeys(pass);
-        clickLoginBtn();
     }
 
-    private void clickLoginBtn() {
+    public MngrHome clickLoginBtn() {
         driver.findElement(btnLogin).click();
+        try {
+            getAlert();
+        } catch (NoAlertPresentException e) {
+            return new MngrHome(driver);
+        }
+        return null;
     }
 
-    private void clickResetBtn() {
-        driver.findElement(btnReset).click();
-    }
-
-    public String getAlertText() {
-        var alert = driver.switchTo().alert();
-        var alertTxt = alert.getText();
-        alert.accept();
-        return alertTxt;
+    public Alert getAlert() {
+        return driver.switchTo().alert();
     }
 }

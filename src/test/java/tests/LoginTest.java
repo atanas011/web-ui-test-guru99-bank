@@ -1,5 +1,6 @@
 package tests;
 
+import java.io.IOException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -8,6 +9,7 @@ import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import pages.Login;
+import util.Util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,7 +29,7 @@ public class LoginTest {
 
     @ParameterizedTest
     @MethodSource("userData")
-    public void mngrIdShown(String username, String password) {
+    public void mngrIdShown(String username, String password) throws IOException {
         login.enterCredentials(username, password);
         var mngrHome = login.clickLoginBtn();
         try {
@@ -36,6 +38,7 @@ public class LoginTest {
             alert.accept();
         } catch (NoAlertPresentException e) {
             assertTrue(mngrHome.getWelcomeText().contains(username));
+            Util.takeScreenshot(driver, "mngr-home");
         }
     }
 
@@ -46,11 +49,12 @@ public class LoginTest {
 
     // Data Provider
     private static Object[][] userData() {
+        String validUser = "mngr486178", validPass = "ebanuze";
         return new Object[][]{
                 {"invalid", "invalid"},
-                {"invalid", "ebanuze"},
-                {"mngr486178", "invalid"},
-                {"mngr486178", "ebanuze"}
+                {"invalid", validPass},
+                {validUser, "invalid"},
+                {validUser, validPass}
         };
     }
 }
